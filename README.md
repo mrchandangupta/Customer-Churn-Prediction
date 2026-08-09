@@ -214,8 +214,8 @@ Because the saved object is a full scikit-learn `Pipeline`, scoring a new custom
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/<your-username>/customer-churn-prediction.git
-cd customer-churn-prediction
+git clone https://github.com/mrchandangupta/Customer-Churn-Prediction.git
+cd Customer-Churn-Prediction
 
 # 2. Create a virtual environment (recommended)
 python -m venv venv
@@ -245,7 +245,7 @@ Then open the local URL Streamlit prints (typically `http://localhost:8501`) and
 ## 📁 Project Structure
 
 ```
-customer-churn-prediction/
+Customer-Churn-Prediction/
 ├── README.md                        # You are here
 ├── LICENSE                          # MIT license
 ├── requirements.txt                 # Python dependencies
@@ -292,7 +292,7 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## 🙋 Author
 
-**[Your Name]**
-📧 your.email@example.com · 🔗 [LinkedIn](https://linkedin.com/in/your-profile) · 💻 [GitHub](https://github.com/your-username)
+**[Chandan Kumar]**
+📧 ck897476@gmail.com · 🔗 [LinkedIn](https://www.linkedin.com/in/chandangupta97) · 💻 [GitHub](https://github.com/mrchandangupta)
 
-*If you found this project useful, consider giving it a ⭐ — it helps a lot for visibility on placement season!*
+*If you found this project useful, consider giving it a ⭐ — it helps a lot for visibility . Thank You !*
