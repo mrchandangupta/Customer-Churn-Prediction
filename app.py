@@ -1,18 +1,3 @@
-"""
-Customer Churn Prediction — Deployment Demo (Streamlit)
---------------------------------------------------------
-Loads the trained pipeline (preprocessing + SMOTE + tuned XGBoost) saved by
-the notebook as `churn_model_pipeline.pkl` and serves an interactive form
-that returns a live churn prediction + probability for any customer profile.
-
-Run locally with:
-    pip install streamlit pandas scikit-learn xgboost imbalanced-learn joblib
-    streamlit run app.py
-
-This is a lightweight demo of how the model would sit behind a UI or,
-equivalently, behind a FastAPI/Flask REST endpoint in production.
-"""
-
 import joblib
 import pandas as pd
 import streamlit as st
@@ -28,7 +13,6 @@ def load_model():
 
 
 def predict_churn(customer: dict, model) -> dict:
-    """Score a single customer record and return prediction + probability."""
     input_df = pd.DataFrame([customer])
     input_df["AvgChargePerMonth"] = input_df["TotalCharges"] / (input_df["tenure"] + 1)
     proba = model.predict_proba(input_df)[0, 1]
@@ -41,18 +25,14 @@ def predict_churn(customer: dict, model) -> dict:
 
 st.title("📉 Customer Churn Predictor")
 st.write(
-    "Enter a customer's profile to get a live churn prediction from the "
-    "trained XGBoost model (see the accompanying notebook for how it was built)."
+    "Enter a customer's profile to get a live churn prediction  "
+    
 )
 
 try:
     model = load_model()
 except FileNotFoundError:
-    st.error(
-        f"Could not find `{MODEL_PATH}`. Run the notebook "
-        "(`Customer_Churn_Prediction.ipynb`) first — the final model-saving "
-        "cell writes this file, and this app must be run from the same folder."
-    )
+    st.error( f"Could not find {MODEL_PATH}")
     st.stop()
 
 with st.form("customer_form"):

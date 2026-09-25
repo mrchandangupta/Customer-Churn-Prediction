@@ -2,13 +2,12 @@
 
 # 📉 Customer Churn Prediction
 
-### An End-to-End Machine Learning Project — EDA → Modeling → Explainability → Deployment
+### An End-to-End Machine Learning Project — EDA → Modeling → Deployment
 
 [![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/)
 [![scikit--learn](https://img.shields.io/badge/scikit--learn-1.8-F7931E?style=flat&logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
 [![XGBoost](https://img.shields.io/badge/XGBoost-3.4-006400?style=flat)](https://xgboost.readthedocs.io/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-App-FF4B4B?style=flat&logo=streamlit&logoColor=white)](https://streamlit.io/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat)](LICENSE)
 
 **Predicting which customers are about to churn — and why — using the IBM Telco Customer Churn dataset.**
 
@@ -16,8 +15,6 @@
 [Results](#-key-results) •
 [Architecture](#-project-architecture) •
 [EDA](#-exploratory-data-analysis) •
-[Modeling](#-modeling--evaluation) •
-[Explainability](#-explainability) •
 [App Demo](#-deployment-demo) •
 [Getting Started](#-getting-started) •
 [Business Impact](#-business-recommendations)
@@ -34,40 +31,33 @@ This project builds a complete, production-style machine learning pipeline that:
 
 - Explores and cleans a real-world telecom dataset of **7,043 customers**
 - Engineers features and handles class imbalance (only ~26.5% of customers churn)
-- Trains and compares **three models** (Logistic Regression, Random Forest, XGBoost)
+- Trains and compares **two models** (Random Forest, XGBoost)
 - Tunes the best candidate with **GridSearchCV** (5-fold cross-validation, 54 hyperparameter combinations)
 - Evaluates rigorously with ROC-AUC, precision/recall, confusion matrices, and precision-recall curves
-- Explains predictions with **SHAP** so results are actionable, not just accurate
 - Ships a saved, reusable model **pipeline** and a working **Streamlit app** for live predictions
 
-> 📓 The full analysis lives in [`Customer_Churn_Prediction.ipynb`](Customer_Churn_Prediction.ipynb) — every cell has already been run, so all charts and metrics below are the actual output of that notebook, not mockups.
-
 ---
-
 ## 🏆 Key Results
 
 | Metric (held-out test set, 1,409 customers) | Tuned XGBoost |
 |---|---|
 | **ROC-AUC** | **0.840** |
-| Accuracy | 0.769 |
-| Precision (Churn class) | 0.547 |
-| Recall (Churn class) | 0.741 |
-| F1-score (Churn class) | 0.630 |
-| Best CV ROC-AUC (5-fold) | 0.847 |
+| Accuracy | 0.77 |
+| Precision (Churn class) | 0.55 |
+| Recall (Churn class) | 0.74 |
+| F1-score (Churn class) | 0.63 |
+| Best CV ROC-AUC (5-fold) | 0.840 |
 
-The model correctly flags **74% of customers who actually churn** (277 of 374) — the metric that matters most for a retention team, since a missed churner is a lost customer while a false alarm just costs an unnecessary outreach email.
+The model correctly flags **74% of customers who actually churn** (276 of 374) — the metric that matters most for a retention team, since a missed churner is a lost customer while a false alarm just costs an unnecessary outreach email.
 
 <details>
-<summary><b>Full comparison across all three models</b> (click to expand)</summary>
+<summary><b>Full comparison across all two models</b> (click to expand)</summary>
 
 | Model | Accuracy | Precision | Recall | F1 | ROC-AUC |
 |---|---|---|---|---|---|
-| Logistic Regression | 0.742 | 0.509 | 0.786 | 0.618 | **0.845** |
-| Random Forest | 0.770 | 0.565 | 0.580 | 0.573 | 0.827 |
-| XGBoost (baseline) | 0.782 | 0.587 | 0.604 | 0.596 | 0.824 |
-| **XGBoost (tuned)** | 0.769 | 0.547 | **0.741** | 0.630 | 0.840 |
-
-*Note: Logistic Regression edges out on raw baseline ROC-AUC — the churn signal here is fairly linear (contract type, tenure). XGBoost was still selected for tuning because gradient boosting captures non-linear feature interactions, scales better as more features are added, and pairs naturally with SHAP for interpretability. After tuning, it nearly matches Logistic Regression's ROC-AUC while catching significantly more actual churners (74% vs. 60% recall for the untuned baseline).*
+| Random Forest | 0.772 | 0.568 | 0.585 | 0.577 | 0.821 |
+| XGBoost (baseline) | 0.785 | 0.600 | 0.569 | 0.584 | 0.824 |
+| **XGBoost (tuned)** | 0.77 | 0.55 | **0.74** | 0.63 | 0.840 |
 
 </details>
 
@@ -79,7 +69,6 @@ The model correctly flags **74% of customers who actually churn** (277 of 374) �
   <img src="images/00_architecture.png" alt="System architecture diagram" width="100%">
 </p>
 
-The pipeline is built entirely as a single scikit-learn `Pipeline` object (preprocessing → SMOTE → classifier), so the exact transformations used in training are guaranteed to be replayed at inference time — no manual re-encoding, no train/serve skew.
 
 ---
 
@@ -132,7 +121,7 @@ The pipeline is built entirely as a single scikit-learn `Pipeline` object (prepr
 
 ## 🤖 Modeling & Evaluation
 
-Three models were trained inside an imbalanced-learn pipeline (`preprocessing → SMOTE → classifier`) and compared on identical train/test splits (80/20, stratified on churn):
+Two models were trained inside an imbalanced-learn pipeline (`preprocessing → SMOTE → classifier`) and compared on identical train/test splits (80/20, stratified on churn):
 
 <p align="center">
   <img src="images/05_baseline_model_comparison.png" alt="Baseline model comparison" width="90%">
@@ -148,7 +137,7 @@ param_grid = {
     'classifier__subsample': [0.8, 1.0]
 }
 # Best params: n_estimators=300, max_depth=5, learning_rate=0.01, subsample=1.0
-# Best CV ROC-AUC: 0.847
+# Best CV ROC-AUC: 0.840
 ```
 
 <table>
@@ -162,22 +151,7 @@ param_grid = {
   <img src="images/08_precision_recall_curve.png" alt="Precision-recall curve" width="60%">
 </p>
 
-**Reading the confusion matrix** (806 / 229 / 97 / 277): of 374 customers who actually churned, the model catches **277 (74%)** — at the cost of 229 false alarms among 1,035 loyal customers. That trade-off is tunable: shifting the classification threshold moves the model along the precision-recall curve above, so a retention team can dial recall up or down depending on the cost of a missed churner vs. an unnecessary retention offer.
-
----
-
-## 🔬 Explainability
-
-Built-in feature importances and **SHAP** values were used to make sure the model's decisions are explainable to a business stakeholder, not just accurate on paper.
-
-<table>
-<tr>
-<td width="45%"><img src="images/09_feature_importance.png" alt="XGBoost feature importance"></td>
-<td width="55%"><img src="images/10_shap_summary.png" alt="SHAP summary plot"></td>
-</tr>
-</table>
-
-Both views agree on the top drivers: **contract type, tenure, internet service type, payment method, and monthly/total charges.** SHAP additionally shows *direction* — e.g. a two-year contract and longer tenure push predictions toward retention, while month-to-month contracts and Fiber optic service push toward churn.
+**Reading the confusion matrix** (808 / 227 / 98 / 276): of 374 customers who actually churned, the model catches **277 (74%)** — at the cost of 229 false alarms among 1,035 loyal customers. That trade-off is tunable: shifting the classification threshold moves the model along the precision-recall curve above, so a retention team can dial recall up or down depending on the cost of a missed churner vs. an unnecessary retention offer.
 
 ---
 
@@ -186,7 +160,7 @@ Both views agree on the top drivers: **contract type, tenure, internet service t
 The trained pipeline is saved as a single artifact (`churn_model_pipeline.pkl`) and served through a **Streamlit** app (`app.py`) that takes a customer profile and returns a live churn prediction:
 
 <p align="center">
-  <img src="images/11_app_interface_mockup.png" alt="Streamlit app interface" width="80%">
+  <img src="images/09_app_interface_mockup.png" alt="Streamlit app interface" width="80%">
 </p>
 
 ```python
@@ -199,10 +173,6 @@ def predict_churn(customer: dict, model_path="churn_model_pipeline.pkl") -> dict
     return {"churn_prediction": "Yes" if pred == 1 else "No",
             "churn_probability": round(float(proba), 4)}
 ```
-
-Because the saved object is a full scikit-learn `Pipeline`, scoring a new customer takes **one line** — no manual encoding or scaling needed at inference time. The same function could equally be wrapped in a FastAPI/Flask REST endpoint, containerized with Docker, and deployed to any cloud provider (see [Future Work](#-future-work)).
-
----
 
 ## 🛠 Getting Started
 
@@ -238,8 +208,6 @@ streamlit run app.py
 ```
 Then open the local URL Streamlit prints (typically `http://localhost:8501`) and fill in a customer profile to get a live prediction.
 
-> The app loads `churn_model_pipeline.pkl` directly, so no retraining is required — it works out of the box using the model already saved in this repo.
-
 ---
 
 ## 📁 Project Structure
@@ -247,9 +215,8 @@ Then open the local URL Streamlit prints (typically `http://localhost:8501`) and
 ```
 Customer-Churn-Prediction/
 ├── README.md                        # You are here
-├── LICENSE                          # MIT license
 ├── requirements.txt                 # Python dependencies
-├── Customer_Churn_Prediction.ipynb  # Full analysis: EDA → modeling → evaluation → explainability
+├── Customer_Churn_Prediction.ipynb  # Full analysis: EDA → modeling → evaluation 
 ├── app.py                           # Streamlit deployment demo
 ├── churn_model_pipeline.pkl         # Saved, trained model (preprocessing + SMOTE + tuned XGBoost)
 ├── Telco-Customer-Churn.csv         # Raw dataset (IBM Telco Customer Churn)
@@ -270,29 +237,14 @@ Ranked by the strength of the drivers the model surfaced:
 
 ---
 
-## 🔮 Future Work
-
-- [ ] Wrap `predict_churn()` in a **FastAPI** service and containerize with **Docker**
-- [ ] Deploy to a cloud provider (AWS/GCP/Azure) behind a scheduled batch-scoring job
-- [ ] A/B test retention offers on customers flagged as high-risk to measure **causal**, not just correlational, impact
-- [ ] Add model/data drift monitoring for production use
-- [ ] Incorporate additional data sources (support tickets, NPS surveys, usage logs) to strengthen predictive power
-
----
-
 ## 🧰 Tech Stack
 
-`Python` · `pandas` · `NumPy` · `scikit-learn` · `XGBoost` · `imbalanced-learn (SMOTE)` · `SHAP` · `matplotlib` / `seaborn` · `Streamlit` · `joblib`
+`Python` · `pandas` · `NumPy` · `scikit-learn` · `XGBoost` · `imbalanced-learn (SMOTE)`  · `matplotlib` / `seaborn` · `Streamlit` · `joblib`
 
 ---
-
-## 📄 License
-
-This project is licensed under the [MIT License](LICENSE).
 
 ## 🙋 Author
 
 **[Chandan Kumar]**
 📧 ck897476@gmail.com · 🔗 [LinkedIn](https://www.linkedin.com/in/chandangupta97) · 💻 [GitHub](https://github.com/mrchandangupta)
 
-*If you found this project useful, consider giving it a ⭐ — it helps a lot for visibility . Thank You !*
